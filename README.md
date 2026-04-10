@@ -20,7 +20,7 @@ The backend is a RESTful API and WebSocket server built with Express.
 
 #### 📍 Core Files
 - `server.js`: The central entry point. Initializes the Express app, MongoDB connection, and Socket.io server.
-- `.env`: Environment variables (Port, MongoDB URI, JWT Secret).
+- `.env`: Environment variables (Port, MongoDB URI, JWT Secret ).
 
 #### 📁 Controllers (`/controllers`)
 Handles the business logic for various entities:
