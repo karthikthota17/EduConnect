@@ -1,0 +1,30 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Frontend-specific
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/out/
+
+# Backend-specific
+backend/uploads/
+backend/node_modules/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
