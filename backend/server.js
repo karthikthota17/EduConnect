@@ -41,8 +41,7 @@ const corsOptions = {
 
 // ✅ Apply CORS BEFORE routes
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-
+app.options('/*', cors(corsOptions));
 // Middleware
 app.use(express.json());
 app.use(helmet());
