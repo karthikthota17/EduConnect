@@ -8,7 +8,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 
-// Load environment variables
+// Load env vars
 dotenv.config();
 
 // Connect to database
@@ -17,43 +17,10 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-// ✅ Allowed origins (centralized)
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  "http://localhost:3000"
-];
-
-// ✅ CORS configuration (IMPORTANT FIX)
-const corsOptions = {
-  origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps, Postman)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-};
-
-// ✅ Apply CORS BEFORE routes
-app.use(cors(corsOptions));
-app.options('/*', cors(corsOptions));
-// Middleware
-app.use(express.json());
-app.use(helmet());
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
-
-// ✅ Socket.IO setup (same allowed origins)
+// Initialize Socket.io
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: [process.env.FRONTEND_URL, "http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"],
     methods: ['GET', 'POST'],
     credentials: true
   },
@@ -62,27 +29,44 @@ const io = new Server(server, {
 
 app.set('io', io);
 
-// Socket handler
+// Import signaling handler
 require('./sockets/signaling')(io);
 
-// Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/classes', require('./routes/classRoutes'));
-app.use('/api/classwork', require('./routes/classworkRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
-app.use('/api/notifications', require('./routes/notificationRoutes'));
+// Body parser
+app.use(express.json());
 
-// Static folder
+// Enable CORS
+app.use(cors());
+
+// Set security headers
+app.use(helmet());
+
+// Dev logging middleware
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
+// Route files
+const authRoutes = require('./routes/authRoutes');
+const classRoutes = require('./routes/classRoutes');
+const classworkRoutes = require('./routes/classworkRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+
+// Mount routers
+app.use('/api/auth', authRoutes);
+app.use('/api/classes', classRoutes);
+app.use('/api/classwork', classworkRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/notifications', notificationRoutes);
+
+// Set static folder for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Test route
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// Server
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
+server.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`));
