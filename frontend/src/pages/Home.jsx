@@ -68,7 +68,7 @@ const Home = () => {
             <div className="text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
                <h1 className="text-3xl sm:text-6xl md:text-8xl font-black tracking-tighter leading-[0.95] text-white">
                  BEYOND THE <br />
-                 <span className="text-indigo-500 uppercase">EduConnect.</span>
+                 <span className="text-indigo-500 uppercase">CLASSROOM.</span>
                </h1>
                <p className="text-sm md:text-xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed px-4">
                   A high-performance EduConnect environment built with the MERN stack. Live video, secure assessments, and real-time analytics in one private workspace.
